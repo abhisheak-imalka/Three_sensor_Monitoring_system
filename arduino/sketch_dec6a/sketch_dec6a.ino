@@ -23,14 +23,14 @@ void loop() {
   int pot3Value = analogRead(pot3Pin);
   
   // Convert readings to voltage
-  voltage1 = pot1Value * (5.0 / 700.0);
+  voltage1 = pot1Value * (5.0 / 1023.0);
   voltage2 = pot2Value * (5.0 / 1023.0);
-  voltage3 = pot3Value * (5.0 / 1023.0);
+  voltage3 = pot3Value * (5.0 / 700);
   
   // Check if reset is enabled
   if (!buzzerReset && allowBuzzer) {
     // Check if voltage1 is greater than 4V and control the buzzer
-    if (voltage1 > 4) {
+    if (voltage2 > 4) {
       digitalWrite(buzzerPin, HIGH);
     } else {
       digitalWrite(buzzerPin, LOW);
@@ -40,8 +40,8 @@ void loop() {
   }
   
   // Control LEDs based on voltage thresholds
-  digitalWrite(13, voltage1 > 2.5 ? HIGH : LOW);
-  digitalWrite(12, voltage2 > 2.5 ? HIGH : LOW);
+  digitalWrite(13, voltage2 > 1.5 ? HIGH : LOW);
+  digitalWrite(12, voltage1 > 3.6 ? HIGH : LOW);
   digitalWrite(11, voltage3 > 2.5 ? HIGH : LOW);
 
   // Check for commands from Processing
@@ -52,6 +52,9 @@ void loop() {
       allowBuzzer = false; // Disable buzzer
     } else if (command == 'A') {
       allowBuzzer = true;  // Enable buzzer
+    } else if (command == 'F') {
+      buzzerReset = false;  // Clear the reset flag
+      allowBuzzer = true;   // Enable buzzer
     }
   }
 

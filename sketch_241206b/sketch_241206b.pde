@@ -1,128 +1,156 @@
 import controlP5.*;
 import processing.serial.*;
 
-Serial myPort;         // Serial port object
-ControlP5 cp5;         // ControlP5 instance
-Knob meter1, meter2, meter3; // Knobs for three meters
-ControlFont font; // Knobs for three meters
+Serial myPort;         
+ControlP5 cp5;         // ControlP5 
+Knob meter1, meter2, meter3; //  three meters
+ControlFont font; // 
 boolean showResetButton = false;
 int buttonX, buttonY, buttonWidth, buttonHeight;
+int refreshButtonX, refreshButtonY, refreshButtonWidth, refreshButtonHeight;
 
 
 
 float voltage1, voltage2, voltage3;
 
+
+
 void setup() {
   size(1200, 800);      // Size of the window
 
-  // Initialize serial connection
-  myPort = new Serial(this, "COM4", 9600);  // Update with your correct COM port
-  myPort.bufferUntil('\n'); // Read data until newline character
+  // *********************Initialize serial connection********************
+  myPort = new Serial(this, "COM4", 9600);  
+  myPort.bufferUntil('\n'); 
 
-  // Initialize ControlP5 and the meters
+  // ********************Initialize ControlP5 and the meters**************
   cp5 = new ControlP5(this);
-  PFont pfont = createFont("Arial", 20, true); // Use a Processing PFont 
-  font = new ControlFont(pfont, 20); // Set font size
+  PFont pfont = createFont("Arial", 20, true); 
+  font = new ControlFont(pfont, 20); 
   
+  //********************buzzer  button************************************
   buttonX = width*3 /4;
   buttonY = 250;
   buttonWidth = 200;
   buttonHeight = 40;
   myPort.write('A');
   
+  //*******************refresh button***************************************
+  refreshButtonX = width*3/4-150 ;
+  refreshButtonY = 250;
+  refreshButtonWidth = 150;
+  refreshButtonHeight = 40;
+  
+  
+  //****************meter1******************
+  
 meter1 = cp5.addKnob("Potentiometer 1")
-            .setRange(0, 5)
-            .setValue(voltage1*100/5)
-            .setPosition(150, height/2 - 50)  // Changed position
-            .setRadius(150)
-            .setDragDirection(Knob.VERTICAL)
-            .setColorForeground(color(0, 255, 0)) // Green foreground
-            .setColorBackground(color(50))       // Dark gray background
-            .setColorActive(color(255, 0, 0));   // Red when active
-
-meter2 = cp5.addKnob("Potentiometer 2")
-            .setRange(0, 5)
+            .setRange(0, 100)
             .setValue(voltage2)
-            .setPosition(400, height/2 - 50)  // Changed position
+            .setPosition(150, height/2 - 50)  
             .setRadius(150)
             .setDragDirection(Knob.VERTICAL)
-            .setColorForeground(color(0, 0, 255)) // Blue foreground
-            .setColorBackground(color(50))       // Dark gray background
-            .setColorActive(color(255, 255, 0)); // Yellow when active
+            .setColorForeground(color(0, 255, 0)) 
+            .setColorBackground(color(50))      
+            .setColorActive(color(255, 0, 0));   
+
+//*******************meter2 *********************
+meter2 = cp5.addKnob("Potentiometer 2")
+            .setRange(0, 100)
+            .setValue(voltage1)
+            .setPosition(400, height/2 - 50) 
+            .setRadius(150)
+            .setDragDirection(Knob.VERTICAL)
+            .setColorForeground(color(0, 0, 255)) 
+            .setColorBackground(color(50))      
+            .setColorActive(color(255, 255, 0)); 
+            
+ //****************meter 3*****************************
 
 meter3 = cp5.addKnob("Potentiometer 3")
-            .setRange(0, 5)
+            .setRange(0, 100)
             .setValue(voltage3)
-            .setPosition(650, height/2 - 50)  // Changed position
+            .setPosition(650, height/2 - 50)  
             .setRadius(150)
             .setDragDirection(Knob.VERTICAL)
-            .setColorForeground(color(255, 0, 255)) // Magenta foreground
-            .setColorBackground(color(50))          // Dark gray background
-            .setColorActive(color(0, 255, 255));   // Cyan when active
+            .setColorForeground(color(255, 0, 255))
+            .setColorBackground(color(50))          
+            .setColorActive(color(0, 255, 255));   
             
+            
+            //************cation of meters*******************
 meter1.getCaptionLabel()
-      .setFont(font)                        // Apply custom font if needed
-      .setColor(color(255, 255, 255))       // Set text color to white
-      .setText("Port 1");  
+      .setFont(font)
+      .setColor(color(0,0,0))       
+      .setText("Laptop Heat %");  
 meter2.getCaptionLabel()
-      .setFont(font)                        // Apply custom font if needed
-      .setColor(color(255, 255, 255))       // Set text color to white
-      .setText("Port 2");  
+      .setFont(font)                       
+      .setColor(color(0, 0,0))       
+      .setText("Room temperature%");  
 meter3.getCaptionLabel()
-      .setFont(font)                        // Apply custom font if needed
-      .setColor(color(255, 255, 255))       // Set text color to white
-      .setText("Port 3");  
+      .setFont(font)                        
+      .setColor(color(0, 0,0))
+      .setText("Room light %");  
           
 }
 void draw() {
-  background(220);
+  background(255);
 
-  // Update knob values dynamically
-  meter1.setValue(voltage1);
-  meter2.setValue(voltage2);
-  meter3.setValue(voltage3);
+  //******************************* Update knob values for meters**************************
+  meter1.setValue((voltage2/5)*100);
+  meter2.setValue((voltage1/5)*100);
+  meter3.setValue((voltage3/5)*100);
   
-  textFont(createFont("Arial", 48)); 
-  fill(0); // Set the color to black for the title
-  text("Potentiometer Values", width / 2 - 150, 50); // Title text
+  
+  
+  
+  
+  //*********************************title*********************************
+  textFont(createFont("Arial", 68)); 
+  fill(100); 
+  text("Smart Study Table", width / 2 - 150, 50);
 
   textFont(createFont("Arial", 32));
 
-  // Change text color and draw the labels
-  fill(255, 0, 0); // Set the color to red
-  text("Pot 1 = " + voltage1 + "%", width/3, 120);
+ //**********************show three values**********************************
+  fill(0, 0, 255); //   blue
+  text("Room Temperature = " +nf((5*voltage1+10),1,2) + " C - "+nf(convertFran((5*voltage1+10)),1,2)+" F", width/3, 120);
 
-  fill(0, 255, 0); // Set the color to green
-  text("Pot 2 = " + voltage2, width/3, 160);
+//*************************************************
+  fill(0, 100, 0); // Dark green 
+  text("Laptop Heat = " + nf((2*voltage2+25),1,2)+ " C - "+ nf(convertFran((2*voltage2+25)),1,2)+" F",width/3, 160);
 
-  fill(0, 0, 255); // Set the color to blue
-  text("Pot 3 = " + voltage3, width/3, 200);
+//******************************************************
+  fill(128, 0, 128); // Purple color
+  text("Room Light = " + nf((voltage3/5)*100, 1,2) + "%", width/3, 200);
+  
 
-  // Change text color based on conditions
-  if (voltage1 > 2.5) {
-     fill(0, 255, 0); // Green text for "Laptop Fan on"
+  // ******************************************Change text color based on conditions********************************************
+  if (voltage2 > 1.5) {
+     fill(3, 148, 252); 
      text("Laptop Fan on", width*3/4, 120);
   } else {
-     fill(255, 0, 0); // Red text for "Fan off"
-     text("Fan off", width*3/4, 120);
+     fill(255, 0, 0); 
+     text("Laptop Fan off", width*3/4, 120);
   }
   
-  if (voltage2 > 2.5) {
-     fill(0, 255, 0); // Green text for "Laptop Fan on"
-     text("Laptop Fan on", width*3/4, 160);
+  if (voltage1 > 3.6) {
+     fill(3, 148, 252); 
+     text("Table Fan on", width*3/4, 160);
   } else {
-     fill(255, 0, 0); // Red text for "Fan off"
-     text("Fan off", width*3/4, 160);
+     fill(255, 0, 0); 
+     text("Table Fan off", width*3/4, 160);
   }
   
   if (voltage3 > 2.5) {
-     fill(0, 255, 0); // Green text for "Laptop Fan on"
-     text("Laptop Fan on", width*3/4, 200);
+     fill(3,148,252); 
+     text("Table Light on", width*3/4, 200);
   } else {
      fill(255, 0, 0); // Red text for "Fan off"
-     text("Fan off", width*3/4, 200);
+     text("Table Light OFF", width*3/4, 200);
   }
-    // Draw the bar graph
+  
+  
+    // ******************************************* bar graph****************************
   int barWidth = width - 100;
   int barHeight = height / 4;
   int barX = 50;
@@ -138,23 +166,17 @@ void draw() {
   int barX3 = 50;
   int barY3 = 800- barHeight / 2;
 
-  fill(0, 255, 0); // Set the fill color to green
-  rect(barX, barY, map(voltage1, 0, 5, 0, barWidth), barHeight); // Draw the bar
+  fill(0, 255, 0); //Green
+  rect(barX, barY, map(voltage2, 0, 5, 0, barWidth), barHeight); // Draw the bar
   
-  fill(0, 0, 255); // Set the fill color to green
-  rect(barX2, barY2, map(voltage2, 0, 5, 0, barWidth2), barHeight2); // Draw the bar
+  fill(3, 148, 252);// LIght blue
+  rect(barX2, barY2, map(voltage1, 0, 5, 0, barWidth2), barHeight2); // Draw the bar
   
-  fill(0, 255, 255); // Set the fill color to green
+  fill(230,230,250);// Lavender
   rect(barX3, barY3, map(voltage3, 0, 5, 0, barWidth3), barHeight3); // Draw the bar
 
-  // Draw the text
-  fill(0); // Set the text color to black
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  text("LDR Value: " + voltage1, width / 2, height / 2-100 + barHeight); // Display the LDR value
-  
-  
-    // Read serial data from Arduino
+
+    //********************************************** Read serial data from Arduino****************************
   if (myPort.available() > 0) {
     String inString = myPort.readStringUntil('\n');
     if (inString != null) {
@@ -165,33 +187,45 @@ void draw() {
       }
     }
   }
-  
-  // Check if voltage1 is greater than 4 to show the reset button
-  if (voltage1 > 4) {
+    // *********************************************show button********************
+  if (voltage2 > 4) {
     showResetButton = true;
   }
   
-  // Draw the button if visible
+ 
   if (showResetButton) {
     if (mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-      fill(200, 0, 0);  // Hovered button color (darker red)
+      fill(200, 0, 0);  
     } else {
-      fill(255, 0, 0);  // Normal button color (red)
+      fill(255, 0, 0);  
     }
     rect(buttonX, buttonY, buttonWidth, buttonHeight);
     fill(255);
     textAlign(CENTER, CENTER);
     text("Reset Buzzer", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
   }
+  
+  
+  //************************************refresh button ****************************************
+  if (mouseX > refreshButtonX && mouseX < refreshButtonX + refreshButtonWidth && mouseY > refreshButtonY && mouseY < refreshButtonY + refreshButtonHeight) {
+    fill(0, 150, 0);  // Hovered button color (darker green)
+  } else {
+    fill(0, 255, 0);  // Normal button color (green)
+  }
+  rect(refreshButtonX, refreshButtonY, refreshButtonWidth, refreshButtonHeight);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  text("Refresh", refreshButtonX + refreshButtonWidth / 2, refreshButtonY + refreshButtonHeight / 2);
 }
 
 
+// ************************************************Read data from Arduino************************************************************
 void serialEvent(Serial myPort) {
-  String input = myPort.readStringUntil('\n'); // Read data from Arduino
+  String input = myPort.readStringUntil('\n'); 
   if (input != null) {
-    input = trim(input);  // Remove whitespace
+    input = trim(input); 
     
-    String[] values = split(input, ','); // Expecting comma-separated values
+    String[] values = split(input, ','); 
     if (values.length == 3) {
       voltage1 = float(values[0]);
       voltage2 = float(values[1]);
@@ -199,11 +233,26 @@ void serialEvent(Serial myPort) {
     }
   }
 }
-
+//*********************************button clicked function********************************************************
 void mousePressed() {
-  // Check if the button is clicked
+ 
   if (showResetButton && mouseX > buttonX && mouseX < buttonX + buttonWidth && mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-    myPort.write('R');  // Send reset signal to Arduino
-    showResetButton = false;  // Hide the button after resetting
+    myPort.write('R');  
+    showResetButton = false;  
   }
+    if (mouseX > refreshButtonX && mouseX < refreshButtonX + refreshButtonWidth && mouseY > refreshButtonY && mouseY < refreshButtonY + refreshButtonHeight) {
+    myPort.write('F');  
+    showResetButton = false;  
+    voltage1 = 0; 
+  }
+
+}
+//********************************************convert to faran *********************************************************
+float convertFran(float vol){
+      float faran= vol;
+      faran=faran*9;
+      faran=(faran/5)+32;
+      
+      return faran;
+
 }
