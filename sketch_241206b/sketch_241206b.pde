@@ -125,20 +125,20 @@ void draw() {
   
 
   // ******************************************Change text color based on conditions********************************************
-  if (voltage2 > 1.5) {
-     fill(3, 148, 252); 
-     text("Laptop Fan on", width*3/4, 120);
-  } else {
-     fill(255, 0, 0); 
-     text("Laptop Fan off", width*3/4, 120);
-  }
-  
   if (voltage1 > 3.6) {
      fill(3, 148, 252); 
-     text("Table Fan on", width*3/4, 160);
+     text("Table Fan on", width*3/4, 120);
   } else {
      fill(255, 0, 0); 
-     text("Table Fan off", width*3/4, 160);
+     text("Table Fan off", width*3/4, 120);
+  }
+  
+  if (voltage2 > 1.5) {
+     fill(3, 148, 252); 
+     text("Laptop Fan on", width*3/4, 160);
+  } else {
+     fill(255, 0, 0); 
+     text("Laptop Fan off", width*3/4, 160);
   }
   
   if (voltage3 > 2.5) {
